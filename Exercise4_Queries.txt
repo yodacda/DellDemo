@@ -1,0 +1,52 @@
+with max_covid_cases as ( 
+#Exercise4 Queries
+
+#1-	What is the country with the highest number of Covid-19 cases per 100 000 Habitants at 31/07/2020?
+select *, div(population,cumulative_count) as covid_count, 
+div(cumulative_count, 100000) as covid_count_100thousand 
+from covid19data where year_week='2020-53' 
+and indicator = 'cases' )
+select country from max_covid_cases where covid_count_100thousand =
+(select max(covid_count_100thousand) from max_covid_cases)
+
+#2-	What is the top 10 countries with the lowest number of Covid-19 cases per 100 000 Habitants at 31/07/2020?
+with max_covid_cases as ( 
+select *, div(population,cumulative_count) as covid_count, 
+div(cumulative_count, 100000) as covid_count_100thousand 
+from covid19data where year_week='2020-53' 
+and indicator = 'cases' ),
+
+lowest_covid_cases as (select country, covid_count_100thousand, 
+row_number() over(order by covid_count_100thousand)
+from max_covid_cases)
+select * from lowest_covid_cases where row_number between 1 and 10
+
+
+#3-	What is the top 10 countries with the highest number of cases among the top 20 richest countries (by GDP per capita)?
+with Europe_Countries AS 
+(select "Country", "GDP ($ per capita)" , rank() over ( order by "GDP ($ per capita)" desc) 
+ from world_of_countries where "Region" like '%EUROPE%') ,
+ covid_cases as
+ (select DISTINCT(country), cumulative_count, max(year_week) from public.covid19data
+where indicator = 'cases' and year_week='2022-40'
+group by covid19data.country, cumulative_count),
+joins_data as (
+ select DISTINCT(covid_cases.country), "GDP ($ per capita)", cumulative_count, rank, row_number() over (order by cumulative_count) from covid_cases join Europe_Countries
+ on covid_cases.country = Europe_Countries."Country"
+ where rank between 1 and 20
+ order by rank )
+ select country, "GDP ($ per capita)", cumulative_count from joins_data
+ where row_number between 1 and 10
+
+#4-	List all the regions with the number of cases per million of inhabitants and display information on population density, for 31/07/2020. 
+#Unable to understand the question, need more details.
+ 
+#5-	Query the data to find duplicated records.
+#Note: There is no Unique column to find out the duplicate columns, considered Country column and find out the duplicates here. 
+select year_Week, Country, count(Country) from covid19data
+group by year_week, Country HAVING count(Country) > 1
+order by year_week 
+
+
+#6-	Analyze the performance of all the queries and describes what you see. Get improvements suggestions.
+Dont have enough time to analyze the performance issues.

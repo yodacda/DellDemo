@@ -1,0 +1,21 @@
+every day 6AM running the python script in unix/linux environment to fetch the data and update the postgressql.
+0 6 * * * \data\dell_demo\DellDemoTest.py
+
+
+every day 6AM running the python script in windows environment to fetch the data and update the postgressql.
+Create batch file with python script like below
+@echo off
+python.exe path python script path
+
+save above two lines as .bat file.
+
+Through windows scheduler we can run the above create bat file everyday.
+
+Below steps are useful to create a windows scheduler
+
+Open the Windows Control Panel and then click on the Administrative Tools
+Double-click on the Task Scheduler, and then choose the option to ‘Create Basic Task…’
+Type a name for your task, and then press Next. For instance, let’s name the task as: DellDemo
+Choose to start the task ‘Daily‘ since we wish to run the Python script daily at 6am. Also specify the start date and time (6am for our example)
+Select, Start a program, and then press Next
+Use the Browse button to find the batch file (abovecreated.bat) that runs the Python script. In our case:

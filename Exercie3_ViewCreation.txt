@@ -1,0 +1,8 @@
+#Creating the view based on the latest year_week
+
+create view DellDemoCovidDataView as 
+select 
+	CURRENT_TIMESTAMP, 
+	div(sum(cumulative_count),100000) as cases_per_100000 
+from covid19data where year_week = (select max(year_week) from covid19data) 
+and indicator = 'cases'
